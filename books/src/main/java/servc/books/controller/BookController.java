@@ -19,6 +19,11 @@ public class BookController {
         return bookService.GetAllBooks();
     }
 
+    @GetMapping(params = {"take", "skip"})
+    public List<Book> GetPartOfBooks(@RequestParam int take, @RequestParam int skip) {
+        return bookService.GetPartOfBooks(take, skip);
+    }
+
     @GetMapping("/{id}")
     public Book GetBookById(@PathVariable Integer id){
         return bookService.GetBookByID(id);

@@ -11,8 +11,12 @@ import java.util.stream.IntStream;
 public class InMemoryBookDAO {
     private final List<Book> BOOKS = new ArrayList<Book>();
 
-    public List<Book> GetAllBooks(){
+    public List<Book> GetAllBooks() {
         return BOOKS;
+    }
+
+    public List<Book> GetPartOfBooks(int take, int skip) {
+        return BOOKS.stream().skip(skip).limit(take).toList();
     }
 
     public Book GetBookByID(Integer id){
