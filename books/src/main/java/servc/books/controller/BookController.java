@@ -24,6 +24,11 @@ public class BookController {
         return bookService.GetPartOfBooks(take, skip);
     }
 
+    @GetMapping(params = {"sort"})
+    public List<Book> GetSortedBooks(@RequestParam List<String> sort){
+        return bookService.GetSortedBooks(sort);
+    }
+
     @GetMapping("/{id}")
     public Book GetBookById(@PathVariable Integer id){
         return bookService.GetBookByID(id);

@@ -21,6 +21,9 @@ public class InMemoryBookServiceImpl implements BookService {
     public List<Book> GetPartOfBooks(int take, int skip){
         return repo.GetPartOfBooks(take, skip);
     }
+    public List<Book> GetSortedBooks(List<String> sort){
+        return repo.GetSortedBooks(sort);
+    }
 
     public Book GetBookByID(Integer id){
         return repo.GetBookByID(id);
