@@ -2,37 +2,36 @@ package servc.books.service.impl;
 
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
-import servc.books.model.Book;
+import servc.books.model.tbl_Books;
 import servc.books.repository.InMemoryBookDAO;
 import servc.books.service.BookService;
 
 import java.util.List;
-import java.util.stream.IntStream;
 
 @Service
 @AllArgsConstructor
 public class InMemoryBookServiceImpl implements BookService {
     private final InMemoryBookDAO repo;
 
-    public List<Book> GetAllBooks(){
+    public List<tbl_Books> GetAllBooks(){
         return repo.GetAllBooks();
     }
 
-    public List<Book> GetPartOfBooks(int take, int skip){
+    public List<tbl_Books> GetPartOfBooks(int take, int skip){
         return repo.GetPartOfBooks(take, skip);
     }
-    public List<Book> GetSortedBooks(List<String> sort){
+    public List<tbl_Books> GetSortedBooks(List<String> sort){
         return repo.GetSortedBooks(sort);
     }
 
-    public Book GetBookByID(Integer id){
+    public tbl_Books GetBookByID(Integer id){
         return repo.GetBookByID(id);
     }
-    public Book AddBook(Book book) {
+    public tbl_Books AddBook(tbl_Books book) {
         return repo.AddBook(book);
     }
 
-    public Book UpdateBook(Integer id, Book book) {
+    public tbl_Books UpdateBook(Integer id, tbl_Books book) {
         return repo.UpdateBook(id, book);
     }
 
