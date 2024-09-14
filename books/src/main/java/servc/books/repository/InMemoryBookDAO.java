@@ -2,25 +2,34 @@ package servc.books.repository;
 
 import org.springframework.stereotype.Repository;
 import servc.books.model.tbl_Books;
+import servc.books.model.tbl_BooksDTO;
+import servc.books.service.tbl_BooksDTOMapper;
 
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 @Repository
 public class InMemoryBookDAO {
     private final List<tbl_Books> BOOKS = new ArrayList<tbl_Books>();
+    private final tbl_BooksDTOMapper mapper = new tbl_BooksDTOMapper();
 
-    public List<tbl_Books> GetAllBooks() {
-        return BOOKS;
+    public List<tbl_BooksDTO> GetAllBooks() {
+        return BOOKS.stream()
+                .map(mapper)
+                .collect(Collectors.toList());
     }
 
-    public List<tbl_Books> GetPartOfBooks(int take, int skip) {
-        return BOOKS.stream().skip(skip).limit(take).toList();
+    public List<tbl_BooksDTO> GetPartOfBooks(int take, int skip) {
+        return BOOKS.stream()
+                .skip(skip).limit(take)
+                .map(mapper)
+                .toList();
     }
 
-    public List<tbl_Books> GetSortedBooks(List<String> sort) {
+    public List<tbl_BooksDTO> GetSortedBooks(List<String> sort) {
         List<tbl_Books> books = BOOKS;
 
         for (String sortType : sort) {
@@ -60,22 +69,25 @@ public class InMemoryBookDAO {
                     break;
             }
         };
-        return books;
+        return books.stream().map(mapper).toList();
     }
 
-    public tbl_Books GetBookByID(Integer id){
+    public tbl_BooksDTO GetBookByID(Integer id){
         return BOOKS.stream()
                 .filter(elem -> elem.getID().equals(id))
                 .findFirst()
+                .map(mapper)
                 .orElse(null);
     }
 
-    public tbl_Books AddBook(tbl_Books book) {
-        BOOKS.add(book);
-        return book;
+    public tbl_BooksDTO AddBook(tbl_BooksDTO booksDTO){
+        if (BOOKS.add(mapper.getEntity(booksDTO)))
+            return booksDTO;
+        else
+            return null;
     }
 
-    public tbl_Books UpdateBook(Integer id, tbl_Books book) {
+    public tbl_BooksDTO UpdateBook(Integer id, tbl_BooksDTO booksDTO) {
         var updatedBook = GetBookByID(id);
 
         if (updatedBook != null){
@@ -84,8 +96,8 @@ public class InMemoryBookDAO {
                     .findFirst()
                     .orElse( -1);
 
-            BOOKS.set(bookIdx, book);
-            return book;
+            if (BOOKS.set(bookIdx, mapper.getEntity(booksDTO)) != null)
+                return booksDTO;
         }
 
         return null;

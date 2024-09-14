@@ -4,31 +4,40 @@ import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Primary;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
-import servc.books.model.tbl_Books;
+import servc.books.model.tbl_BooksDTO;
 import servc.books.repository.BookRepository;
 import servc.books.service.BookService;
+import servc.books.service.tbl_BooksDTOMapper;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
 @Primary
 public class BookServiceImpl implements BookService {
     private final BookRepository repository;
+    private final tbl_BooksDTOMapper mapper;
 
     @Override
-    public List<tbl_Books> GetAllBooks() {
-        return repository.findAll();
+    public List<tbl_BooksDTO> GetAllBooks() {
+        return repository.findAll()
+                .stream()
+                .map(mapper)
+                .collect(Collectors.toList());
     }
 
     @Override
-    public List<tbl_Books> GetPartOfBooks(int take, int skip) {
-        return repository.findAll().stream().skip(skip).limit(take).toList();
+    public List<tbl_BooksDTO> GetPartOfBooks(int take, int skip) {
+        return repository.findAll()
+                .stream().skip(skip).limit(take)
+                .map(mapper)
+                .toList();
     }
 
     @Override
-    public List<tbl_Books> GetSortedBooks(List<String> sort) {
+    public List<tbl_BooksDTO> GetSortedBooks(List<String> sort) {
         List<Sort.Order> orders = new ArrayList();
 
         for (String sortType : sort){
@@ -45,22 +54,24 @@ public class BookServiceImpl implements BookService {
         }
 
         // TODO: ERROR -- "Could not resolve attribute"
-        return repository.findAll(Sort.by(orders));
+        return repository.findAll(Sort.by(orders))
+                .stream().map(mapper)
+                .toList();
     }
 
     @Override
-    public tbl_Books GetBookByID(Integer id) {
-        return repository.findById(id).orElse(null);
+    public tbl_BooksDTO GetBookByID(Integer id) {
+        return repository.findById(id).map(mapper).orElse(null);
     }
 
     @Override
-    public tbl_Books AddBook(tbl_Books book) {
-        return repository.save(book);
+    public tbl_BooksDTO AddBook(tbl_BooksDTO booksDTO) {
+        return mapper.apply(repository.save(mapper.getEntity(booksDTO)));
     }
 
     @Override
-    public tbl_Books UpdateBook(Integer id, tbl_Books book) {
-        return repository.save(book);
+    public tbl_BooksDTO UpdateBook(Integer id, tbl_BooksDTO booksDTO) {
+        return mapper.apply(repository.save(mapper.getEntity(booksDTO)));
     }
 
     @Override
