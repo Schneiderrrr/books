@@ -3,7 +3,7 @@ package servc.books.repository;
 import org.springframework.stereotype.Repository;
 import servc.books.model.tbl_Books;
 import servc.books.model.tbl_BooksDTO;
-import servc.books.service.tbl_BooksDTOMapper;
+import servc.books.service.tbl_BooksMapper;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -14,18 +14,22 @@ import java.util.stream.IntStream;
 @Repository
 public class InMemoryBookDAO {
     private final List<tbl_Books> BOOKS = new ArrayList<tbl_Books>();
-    private final tbl_BooksDTOMapper mapper = new tbl_BooksDTOMapper();
+    private final tbl_BooksMapper mapper;
+
+    public InMemoryBookDAO(tbl_BooksMapper mapper) {
+        this.mapper = mapper;
+    }
 
     public List<tbl_BooksDTO> GetAllBooks() {
         return BOOKS.stream()
-                .map(mapper)
+                .map(mapper::EntityToDto)
                 .collect(Collectors.toList());
     }
 
     public List<tbl_BooksDTO> GetPartOfBooks(int take, int skip) {
         return BOOKS.stream()
                 .skip(skip).limit(take)
-                .map(mapper)
+                .map(mapper::EntityToDto)
                 .toList();
     }
 
@@ -69,19 +73,19 @@ public class InMemoryBookDAO {
                     break;
             }
         };
-        return books.stream().map(mapper).toList();
+        return books.stream().map(mapper::EntityToDto).toList();
     }
 
     public tbl_BooksDTO GetBookByID(Integer id){
         return BOOKS.stream()
                 .filter(elem -> elem.getID().equals(id))
                 .findFirst()
-                .map(mapper)
+                .map(mapper::EntityToDto)
                 .orElse(null);
     }
 
     public tbl_BooksDTO AddBook(tbl_BooksDTO booksDTO){
-        if (BOOKS.add(mapper.getEntity(booksDTO)))
+        if (BOOKS.add(mapper.DtoToEntity(booksDTO)))
             return booksDTO;
         else
             return null;
@@ -96,7 +100,7 @@ public class InMemoryBookDAO {
                     .findFirst()
                     .orElse( -1);
 
-            if (BOOKS.set(bookIdx, mapper.getEntity(booksDTO)) != null)
+            if (BOOKS.set(bookIdx, mapper.DtoToEntity(booksDTO)) != null)
                 return booksDTO;
         }
 
