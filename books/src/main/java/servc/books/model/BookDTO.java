@@ -8,11 +8,11 @@ import java.time.LocalDate;
 
 @Getter
 @Setter
-public class tbl_BooksDTO {
+public class BookDTO {
     @Id
-    private Integer ID;
-    private String Name;
-    private String ISBN;
-    private String Author;
-    private LocalDate ReleaseDate;
+    private Integer id;
+    private String name;
+    private String isbn;
+    private String author;
+    private LocalDate releaseDate;
 }

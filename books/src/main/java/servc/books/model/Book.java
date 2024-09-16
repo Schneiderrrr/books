@@ -9,16 +9,16 @@ import java.time.LocalDate;
 @Setter
 @Entity
 @Table
-public class tbl_Books {
+public class Book {
     @Id
     @GeneratedValue
-    private Integer ID;
+    private Integer id;
     @Column(name = "name")
-    private String Name;
+    private String name;
     @Column(name = "isbn")
-    private String ISBN;
+    private String isbn;
     @Column(name = "author")
-    private String Author;
+    private String author;
     @Column(name = "release_date")
-    private LocalDate ReleaseDate;
+    private LocalDate releaseDate;
 }

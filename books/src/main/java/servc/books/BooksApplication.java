@@ -3,7 +3,7 @@ package servc.books;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
-import servc.books.service.tbl_BooksMapper;
+import servc.books.service.BookMapper;
 
 @SpringBootApplication
 public class BooksApplication {
@@ -13,8 +13,8 @@ public class BooksApplication {
 	}
 
 	@Bean
-	tbl_BooksMapper tbl_BooksMapper() {
-		return tbl_BooksMapper.INSTANCE;
+    BookMapper tbl_BooksMapper() {
+		return BookMapper.INSTANCE;
 	}
 
 }

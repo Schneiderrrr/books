@@ -4,10 +4,10 @@ import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Primary;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
-import servc.books.model.tbl_BooksDTO;
+import servc.books.model.BookDTO;
 import servc.books.repository.BookRepository;
 import servc.books.service.BookService;
-import servc.books.service.tbl_BooksMapper;
+import servc.books.service.BookMapper;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,10 +18,10 @@ import java.util.stream.Collectors;
 @Primary
 public class BookServiceImpl implements BookService {
     private final BookRepository repository;
-    private final tbl_BooksMapper mapper;
+    private final BookMapper mapper;
 
     @Override
-    public List<tbl_BooksDTO> GetAllBooks() {
+    public List<BookDTO> GetAllBooks() {
         return repository.findAll()
                 .stream()
                 .map(mapper::EntityToDto)
@@ -29,7 +29,7 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    public List<tbl_BooksDTO> GetPartOfBooks(int take, int skip) {
+    public List<BookDTO> GetPartOfBooks(int take, int skip) {
         return repository.findAll()
                 .stream().skip(skip).limit(take)
                 .map(mapper::EntityToDto)
@@ -37,7 +37,7 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    public List<tbl_BooksDTO> GetSortedBooks(List<String> sort) {
+    public List<BookDTO> GetSortedBooks(List<String> sort) {
         List<Sort.Order> orders = new ArrayList();
 
         for (String sortType : sort){
@@ -60,17 +60,17 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    public tbl_BooksDTO GetBookByID(Integer id) {
+    public BookDTO GetBookByID(Integer id) {
         return repository.findById(id).map(mapper::EntityToDto).orElse(null);
     }
 
     @Override
-    public tbl_BooksDTO AddBook(tbl_BooksDTO booksDTO) {
+    public BookDTO AddBook(BookDTO booksDTO) {
         return mapper.EntityToDto(repository.save(mapper.DtoToEntity(booksDTO)));
     }
 
     @Override
-    public tbl_BooksDTO UpdateBook(Integer id, tbl_BooksDTO booksDTO) {
+    public BookDTO UpdateBook(Integer id, BookDTO booksDTO) {
         return mapper.EntityToDto(repository.save(mapper.DtoToEntity(booksDTO)));
     }
 

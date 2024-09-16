@@ -2,9 +2,9 @@ package servc.books.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
-import servc.books.model.tbl_Books;
+import servc.books.model.Book;
 
 @Repository
-public interface BookRepository extends JpaRepository<tbl_Books, Integer> {
+public interface BookRepository extends JpaRepository<Book, Integer> {
 }
 
