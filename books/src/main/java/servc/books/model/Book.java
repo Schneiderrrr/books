@@ -11,7 +11,7 @@ import java.time.LocalDate;
 @Table
 public class Book {
     @Id
-    @GeneratedValue
+    @GeneratedValue (strategy = GenerationType.IDENTITY)
     private Integer id;
     @Column(name = "name")
     private String name;
