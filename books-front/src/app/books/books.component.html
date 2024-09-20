@@ -1,5 +1,5 @@
 <div *ngFor="let book of books">
     <div>
-      {{ book.name }}
+      <a routerLink="/api/v1/books/{{book.id}}">{{ book.name }}</a>
     </div>
 </div>
