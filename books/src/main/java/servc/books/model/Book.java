@@ -11,11 +11,12 @@ import java.time.LocalDate;
 @Table
 public class Book {
     @Id
-    @GeneratedValue (strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(updatable = false, nullable = false)
     private Integer id;
-    @Column(name = "name")
+    @Column(name = "name", nullable = false)
     private String name;
-    @Column(name = "isbn")
+    @Column(name = "isbn", nullable = false, unique = true, updatable = false)
     private String isbn;
     @Column(name = "author")
     private String author;
