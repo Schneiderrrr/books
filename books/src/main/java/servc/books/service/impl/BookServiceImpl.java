@@ -70,7 +70,7 @@ public class BookServiceImpl implements BookService {
 
     @Override
     public BookDTO AddBook(BookDTO booksDTO) {
-        var book = repository.findByIsbn(booksDTO.getIsbn());
+        var book = repository.findByIsbn(booksDTO.isbn());
         if (book != null){
             throw new BookAlreadyExistsException("Book already exists");
         }

@@ -11,10 +11,4 @@ public class BooksApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(BooksApplication.class, args);
 	}
-
-	@Bean
-    BookMapper tbl_BooksMapper() {
-		return BookMapper.INSTANCE;
-	}
-
 }
