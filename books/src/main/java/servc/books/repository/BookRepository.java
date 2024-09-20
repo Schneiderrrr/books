@@ -6,5 +6,6 @@ import servc.books.model.Book;
 
 @Repository
 public interface BookRepository extends JpaRepository<Book, Integer> {
+    Book findByIsbn(String isbn);
 }
 

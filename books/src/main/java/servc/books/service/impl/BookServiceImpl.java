@@ -4,6 +4,8 @@ import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Primary;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import servc.books.exceptions.BookAlreadyExistsException;
+import servc.books.exceptions.BookNotFoundException;
 import servc.books.model.BookDTO;
 import servc.books.repository.BookRepository;
 import servc.books.service.BookService;
@@ -61,16 +63,23 @@ public class BookServiceImpl implements BookService {
 
     @Override
     public BookDTO GetBookByID(Integer id) {
-        return repository.findById(id).map(mapper::EntityToDto).orElse(null);
+        return repository.findById(id)
+                .map(mapper::EntityToDto)
+                .orElseThrow(() -> new BookNotFoundException("Book not found"));
     }
 
     @Override
     public BookDTO AddBook(BookDTO booksDTO) {
+        var book = repository.findByIsbn(booksDTO.getIsbn());
+        if (book != null){
+            throw new BookAlreadyExistsException("Book already exists");
+        }
         return mapper.EntityToDto(repository.save(mapper.DtoToEntity(booksDTO)));
     }
 
     @Override
     public BookDTO UpdateBook(Integer id, BookDTO booksDTO) {
+        repository.findById(id).orElseThrow(() -> new BookNotFoundException("Book not found"));
         return mapper.EntityToDto(repository.save(mapper.DtoToEntity(booksDTO)));
     }
 

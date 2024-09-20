@@ -2,6 +2,7 @@ package servc.books.controller;
 
 import jakarta.validation.constraints.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import servc.books.model.BookDTO;
@@ -34,18 +35,18 @@ public class BookController {
     }
 
     @GetMapping("/{id}")
-    public BookDTO getBookById(@PathVariable Integer id){
-        return bookService.GetBookByID(id);
+    public ResponseEntity<BookDTO> getBookById(@PathVariable Integer id){
+        return ResponseEntity.ok(bookService.GetBookByID(id));
     }
 
     @PostMapping
-    public BookDTO addBook(@RequestBody BookDTO book){
-        return bookService.AddBook(book);
+    public ResponseEntity<BookDTO> addBook(@RequestBody BookDTO book){
+        return ResponseEntity.ok(bookService.AddBook(book));
     }
 
     @PutMapping("/{id}")
-    public BookDTO updateBookByID(@PathVariable Integer id, @RequestBody BookDTO book){
-        return bookService.UpdateBook(id, book);
+    public ResponseEntity<BookDTO> updateBookByID(@PathVariable Integer id, @RequestBody BookDTO book){
+        return ResponseEntity.ok(bookService.UpdateBook(id, book));
     }
 
     @DeleteMapping("/{id}")
