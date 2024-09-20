@@ -1,5 +1,6 @@
 <div *ngFor="let book of books">
     <div>
       <a routerLink="/api/v1/books/{{book.id}}">{{ book.name }}</a>
+      <button (click)="deleteBook(book.id)" type="button">Delete</button>
     </div>
 </div>
