@@ -4,3 +4,15 @@
       <button (click)="deleteBook(book.id)" type="button">Delete</button>
     </div>
 </div>
+
+<div>
+  <input #newBookName placeholder="Name" type="text" />
+  <input #newBookAuthor placeholder="Author" type="text" />
+  <input #newBookISBN placeholder="ISBN" type="text" />
+  <input #newBookDate type="date" required />
+
+  <button type="button" 
+    (click)="addBook(newBookName.value, newBookISBN.value, newBookAuthor.value, newBookDate.valueAsDate!)">
+    Add new book
+  </button>
+</div>

@@ -33,4 +33,12 @@ export class BooksComponent implements OnInit {
     this.books = this.books.filter(b => b.id != id);
     this.bookService.deleteBook(id).subscribe();
   }
+
+  public addBook(name: string, isbn: string, author: string, date: Date ): void{
+    var book = {name: name, isbn: isbn, author: author, releaseDate: date} as Book;
+    this.bookService.addBook(book)
+      .subscribe(book => {
+        this.books.push(book)
+      });
+  }
 }
