@@ -1,9 +1,9 @@
 package servc.books.repository;
 
 import org.springframework.stereotype.Repository;
-import servc.books.model.tbl_Books;
-import servc.books.model.tbl_BooksDTO;
-import servc.books.service.tbl_BooksMapper;
+import servc.books.model.Book;
+import servc.books.model.BookDTO;
+import servc.books.service.BookMapper;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -13,28 +13,28 @@ import java.util.stream.IntStream;
 
 @Repository
 public class InMemoryBookDAO {
-    private final List<tbl_Books> BOOKS = new ArrayList<tbl_Books>();
-    private final tbl_BooksMapper mapper;
+    private final List<Book> BOOKS = new ArrayList<Book>();
+    private final BookMapper mapper;
 
-    public InMemoryBookDAO(tbl_BooksMapper mapper) {
+    public InMemoryBookDAO(BookMapper mapper) {
         this.mapper = mapper;
     }
 
-    public List<tbl_BooksDTO> GetAllBooks() {
+    public List<BookDTO> GetAllBooks() {
         return BOOKS.stream()
                 .map(mapper::EntityToDto)
                 .collect(Collectors.toList());
     }
 
-    public List<tbl_BooksDTO> GetPartOfBooks(int take, int skip) {
+    public List<BookDTO> GetPartOfBooks(int take, int skip) {
         return BOOKS.stream()
                 .skip(skip).limit(take)
                 .map(mapper::EntityToDto)
                 .toList();
     }
 
-    public List<tbl_BooksDTO> GetSortedBooks(List<String> sort) {
-        List<tbl_Books> books = BOOKS;
+    public List<BookDTO> GetSortedBooks(List<String> sort) {
+        List<Book> books = BOOKS;
 
         for (String sortType : sort) {
             String colName = sortType.split(":")[0];
@@ -49,54 +49,54 @@ public class InMemoryBookDAO {
             switch (colName.toLowerCase()){
                 case "name":
                     if (reverseSort)
-                        books.sort(Comparator.comparing(tbl_Books::getName).reversed());
+                        books.sort(Comparator.comparing(Book::getName).reversed());
                     else
-                        books.sort(Comparator.comparing(tbl_Books::getName));
+                        books.sort(Comparator.comparing(Book::getName));
                     break;
                 case "isbn":
                     if (reverseSort)
-                        books.sort(Comparator.comparing(tbl_Books::getISBN).reversed());
+                        books.sort(Comparator.comparing(Book::getIsbn).reversed());
                     else
-                        books.sort(Comparator.comparing(tbl_Books::getISBN));
+                        books.sort(Comparator.comparing(Book::getIsbn));
                     break;
                 case "author":
                     if (reverseSort)
-                        books.sort(Comparator.comparing(tbl_Books::getAuthor).reversed());
+                        books.sort(Comparator.comparing(Book::getAuthor).reversed());
                     else
-                        books.sort(Comparator.comparing(tbl_Books::getAuthor));
+                        books.sort(Comparator.comparing(Book::getAuthor));
                     break;
                 case "releasedate":
                     if (reverseSort)
-                        books.sort(Comparator.comparing(tbl_Books::getReleaseDate).reversed());
+                        books.sort(Comparator.comparing(Book::getReleaseDate).reversed());
                     else
-                        books.sort(Comparator.comparing(tbl_Books::getReleaseDate));
+                        books.sort(Comparator.comparing(Book::getReleaseDate));
                     break;
             }
         };
         return books.stream().map(mapper::EntityToDto).toList();
     }
 
-    public tbl_BooksDTO GetBookByID(Integer id){
+    public BookDTO GetBookByID(Integer id){
         return BOOKS.stream()
-                .filter(elem -> elem.getID().equals(id))
+                .filter(elem -> elem.getId().equals(id))
                 .findFirst()
                 .map(mapper::EntityToDto)
                 .orElse(null);
     }
 
-    public tbl_BooksDTO AddBook(tbl_BooksDTO booksDTO){
+    public BookDTO AddBook(BookDTO booksDTO){
         if (BOOKS.add(mapper.DtoToEntity(booksDTO)))
             return booksDTO;
         else
             return null;
     }
 
-    public tbl_BooksDTO UpdateBook(Integer id, tbl_BooksDTO booksDTO) {
+    public BookDTO UpdateBook(Integer id, BookDTO booksDTO) {
         var updatedBook = GetBookByID(id);
 
         if (updatedBook != null){
             var bookIdx = IntStream.range(0, BOOKS.size())
-                    .filter(index -> BOOKS.get(index).getID().equals(id))
+                    .filter(index -> BOOKS.get(index).getId().equals(id))
                     .findFirst()
                     .orElse( -1);
 

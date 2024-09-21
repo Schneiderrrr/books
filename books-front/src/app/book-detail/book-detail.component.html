@@ -1,0 +1,20 @@
+<div *ngIf="book">
+    <div>
+        <label for="book-name">Book name: </label>
+        <input id="book-name" [(ngModel)]="book.name" placeholder="name">
+    </div>
+    <div>
+        <label for="book-author">Book author: </label>
+        <input id="book-author" [(ngModel)]="book.author" placeholder="author">
+    </div>
+    <div>
+        <label for="book-isbn">Book ISBN: </label>
+        <input id="book-isbn" [(ngModel)]="book.isbn" placeholder="ISBN">
+    </div>
+    <div>
+        <label for="book-release-date">Book release date: </label>
+        <input id="book-release-date" [(ngModel)]="book.releaseDate" placeholder="Release Date">
+    </div>
+</div>
+
+<button type="button" (click)="save()">Save</button>

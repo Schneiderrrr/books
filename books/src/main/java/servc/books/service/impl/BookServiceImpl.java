@@ -4,12 +4,13 @@ import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Primary;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
-import servc.books.model.tbl_BooksDTO;
+import servc.books.exceptions.BookAlreadyExistsException;
+import servc.books.exceptions.BookNotFoundException;
+import servc.books.model.BookDTO;
 import servc.books.repository.BookRepository;
 import servc.books.service.BookService;
-import servc.books.service.tbl_BooksMapper;
+import servc.books.service.BookMapper;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -18,10 +19,10 @@ import java.util.stream.Collectors;
 @Primary
 public class BookServiceImpl implements BookService {
     private final BookRepository repository;
-    private final tbl_BooksMapper mapper;
+    private final BookMapper mapper;
 
     @Override
-    public List<tbl_BooksDTO> GetAllBooks() {
+    public List<BookDTO> GetAllBooks() {
         return repository.findAll()
                 .stream()
                 .map(mapper::EntityToDto)
@@ -29,7 +30,7 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    public List<tbl_BooksDTO> GetPartOfBooks(int take, int skip) {
+    public List<BookDTO> GetPartOfBooks(int take, int skip) {
         return repository.findAll()
                 .stream().skip(skip).limit(take)
                 .map(mapper::EntityToDto)
@@ -37,40 +38,32 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    public List<tbl_BooksDTO> GetSortedBooks(List<String> sort) {
-        List<Sort.Order> orders = new ArrayList();
-
-        for (String sortType : sort){
-            String colName = sortType.split(":")[0];
-            String dirName = sortType.split(":")[1];
-
-            boolean reverseSort = switch (dirName) {
-                case "desc" -> true;
-                case "asc" -> false;
-                default -> throw new IllegalStateException("Unexpected value: " + dirName);
-            };
-
-            orders.add(new Sort.Order(reverseSort ? Sort.Direction.DESC : Sort.Direction.ASC, colName));
-        }
-
-        // TODO: ERROR -- "Could not resolve attribute"
-        return repository.findAll(Sort.by(orders))
+    public List<BookDTO> GetSortedBooks(List<String> sort) {
+        return repository
+                .findAll(repository.parse(sort))
                 .stream().map(mapper::EntityToDto)
                 .toList();
     }
 
     @Override
-    public tbl_BooksDTO GetBookByID(Integer id) {
-        return repository.findById(id).map(mapper::EntityToDto).orElse(null);
+    public BookDTO GetBookByID(Integer id) {
+        return repository.findById(id)
+                .map(mapper::EntityToDto)
+                .orElseThrow(() -> new BookNotFoundException("Book not found"));
     }
 
     @Override
-    public tbl_BooksDTO AddBook(tbl_BooksDTO booksDTO) {
+    public BookDTO AddBook(BookDTO booksDTO) {
+        var book = repository.findByIsbn(booksDTO.isbn());
+        if (book != null){
+            throw new BookAlreadyExistsException("Book already exists");
+        }
         return mapper.EntityToDto(repository.save(mapper.DtoToEntity(booksDTO)));
     }
 
     @Override
-    public tbl_BooksDTO UpdateBook(Integer id, tbl_BooksDTO booksDTO) {
+    public BookDTO UpdateBook(Integer id, BookDTO booksDTO) {
+        repository.findById(id).orElseThrow(() -> new BookNotFoundException("Book not found"));
         return mapper.EntityToDto(repository.save(mapper.DtoToEntity(booksDTO)));
     }
 
