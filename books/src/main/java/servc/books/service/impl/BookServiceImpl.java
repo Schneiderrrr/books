@@ -11,7 +11,6 @@ import servc.books.repository.BookRepository;
 import servc.books.service.BookService;
 import servc.books.service.BookMapper;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -40,23 +39,8 @@ public class BookServiceImpl implements BookService {
 
     @Override
     public List<BookDTO> GetSortedBooks(List<String> sort) {
-        List<Sort.Order> orders = new ArrayList();
-
-        for (String sortType : sort){
-            String colName = sortType.split(":")[0];
-            String dirName = sortType.split(":")[1];
-
-            boolean reverseSort = switch (dirName) {
-                case "desc" -> true;
-                case "asc" -> false;
-                default -> throw new IllegalStateException("Unexpected value: " + dirName);
-            };
-
-            orders.add(new Sort.Order(reverseSort ? Sort.Direction.DESC : Sort.Direction.ASC, colName));
-        }
-
-        // TODO: ERROR -- "Could not resolve attribute"
-        return repository.findAll(Sort.by(orders))
+        return repository
+                .findAll(repository.parse(sort))
                 .stream().map(mapper::EntityToDto)
                 .toList();
     }
