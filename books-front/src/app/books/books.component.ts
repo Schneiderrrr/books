@@ -11,8 +11,10 @@ import { ActivatedRoute } from '@angular/router';
 })
 export class BooksComponent implements OnInit {
   public books: Book[] = [];
+
   public take?: number;
   public skip?: number;
+  public sort?: string;
 
   constructor(
     private bookService: BookService, 
@@ -22,12 +24,14 @@ export class BooksComponent implements OnInit {
   ngOnInit(): void {
     this.take = Number(this.route.snapshot.paramMap.get('take'));
     this.skip = Number(this.route.snapshot.paramMap.get('skip'));
-
-    console.log("take = " + this.take.toString() + " skip = " + this.skip.toString());
+    this.sort = this.route.snapshot.paramMap.get('sort')?.toString();
     
     if (this.take && this.skip){
       this.getPartOfBooks(this.take, this.skip);
     } 
+    else if (this.sort){
+      this.getSortedBooks(this.sort);
+    }
     else {
       this.getBooks();
     }
@@ -47,6 +51,18 @@ export class BooksComponent implements OnInit {
   
   public getPartOfBooks(take: number, skip: number): void{
     this.bookService.getPartOfBooks(take, skip).subscribe(
+      (response: Book[]) => {
+        this.books = response;
+      },
+      (error: HttpErrorResponse) => {
+        console.log(error.message);
+        alert(error.message);
+      }
+    );
+  }
+  
+  public getSortedBooks(sort: string): void{
+    this.bookService.getSortedBooks(sort).subscribe(
       (response: Book[]) => {
         this.books = response;
       },
