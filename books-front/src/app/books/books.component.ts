@@ -54,15 +54,7 @@ export class BooksComponent implements OnInit {
   }
 
   public getPartOfBooks(take: number, skip: number): void{
-    // this.bookService.getPartOfBooks(take, skip).subscribe(
-    //   (response: Book[]) => {
-    //     this.books = response;
-    //   },
-    //   (error: HttpErrorResponse) => {
-    //     console.log(error.message);
-    //     alert(error.message);
-    //   }
-    // );
+    this.store.dispatch(BooksActions.partOfBooks({ take, skip }));
   }
 
   public getSortedBooks(sort: string): void{
