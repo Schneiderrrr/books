@@ -51,3 +51,27 @@ export const loadPartOfBooksEffect = createEffect(
     )
   }, { functional: true }
 );
+
+export const loadSortedBooksEffect = createEffect(
+  () => {
+    const actions$ = inject(Actions);
+    const apiService$ = inject(BookService);
+
+    return actions$.pipe(
+      ofType(BooksActions.sortedBooks),
+      switchMap(
+        (action: { sort: string }) =>
+          apiService$.getSortedBooks(action.sort)
+            .pipe(
+              map(
+                (books) => BooksActions.loadBooksSuccess({ books: books })
+              ),
+              catchError((error) => {
+                console.error('Error', error);
+                return of(BooksActions.loadBooksFailure({ error }));
+              })
+            )
+      ),
+    )
+  }, { functional: true }
+);

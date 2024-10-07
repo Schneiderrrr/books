@@ -9,6 +9,11 @@ export const partOfBooks = createAction(
   props<{ take: number; skip: number }>(),
 );
 
+export const sortedBooks = createAction(
+  '[Books Page] Sorted books',
+  props<{ sort: string }>(),
+);
+
 export const loadBooksSuccess = createAction(
   '[Books/API] Load Books Success',
   props<{ books: Book[] }>(),

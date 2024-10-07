@@ -58,15 +58,7 @@ export class BooksComponent implements OnInit {
   }
 
   public getSortedBooks(sort: string): void{
-    // this.bookService.getSortedBooks(sort).subscribe(
-    //   (response: Book[]) => {
-    //     this.books = response;
-    //   },
-    //   (error: HttpErrorResponse) => {
-    //     console.log(error.message);
-    //     alert(error.message);
-    //   }
-    // );
+    this.store.dispatch(BooksActions.sortedBooks({ sort }));
   }
 
   public deleteBook(id: number): void{
