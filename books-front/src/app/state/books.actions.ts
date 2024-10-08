@@ -1,7 +1,6 @@
 import { createAction, props } from "@ngrx/store";
 import { Book } from "../book";
 
-
 export const initBooks = createAction('[Books Page] Init');
 
 export const partOfBooks = createAction(
@@ -31,5 +30,25 @@ export const loadBooksSuccess = createAction(
 
 export const loadBooksFailure = createAction(
   '[Books/API] Load Books Failure',
+  props<{ error: any }>(),
+);
+
+export const initBook = createAction(
+  '[One book Page] Init book',
+  props<{ id: number }>(),
+);
+
+export const updateBook = createAction(
+  '[One book Page] Update book',
+  props<{ book: Book }>(),
+);
+
+export const loadOneBookSuccess = createAction(
+  '[Books/API] Load One Book Success',
+  props<{ book: Book }>(),
+);
+
+export const loadOneBookFailure = createAction(
+  '[Books/API] Load One Book Failure',
   props<{ error: any }>(),
 );

@@ -4,6 +4,7 @@ import { catchError, switchMap, map, of } from "rxjs";
 
 import * as BooksActions from "./books.actions";
 import { BookService } from "../book.service";
+import { Book } from "../book";
 
 
 export const loadAllBooksEffect = createEffect(
@@ -117,6 +118,54 @@ export const loadBooksWithAddedEffect = createEffect(
               catchError((error) => {
                 console.error('Error', error);
                 return of(BooksActions.loadBooksFailure({ error }));
+              })
+            )
+      ),
+    )
+  }, { functional: true }
+);
+
+export const loadBookEffect = createEffect(
+  () => {
+    const actions$ = inject(Actions);
+    const apiService$ = inject(BookService);
+
+    return actions$.pipe(
+      ofType(BooksActions.initBook),
+      switchMap(
+        (action: { id: number }) =>
+          apiService$.getOneBook(action.id)
+            .pipe(
+              map(
+                (book) => BooksActions.loadOneBookSuccess({ book: book })
+              ),
+              catchError((error) => {
+                console.error('Error', error);
+                return of(BooksActions.loadOneBookFailure({ error }));
+              })
+            )
+      ),
+    )
+  }, { functional: true }
+);
+
+export const updateBookEffect = createEffect(
+  () => {
+    const actions$ = inject(Actions);
+    const apiService$ = inject(BookService);
+
+    return actions$.pipe(
+      ofType(BooksActions.updateBook),
+      switchMap(
+        (action: { book: Book }) =>
+          apiService$.updateBook(action.book.id, action.book)
+            .pipe(
+              map(
+                (book) => BooksActions.loadOneBookSuccess({ book: book })
+              ),
+              catchError((error) => {
+                console.error('Error', error);
+                return of(BooksActions.loadOneBookFailure({ error }));
               })
             )
       ),

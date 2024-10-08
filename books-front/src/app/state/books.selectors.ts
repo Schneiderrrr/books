@@ -17,3 +17,8 @@ export const selectAllBooks = createSelector(
   selectBooksState,
   (state: BooksState) => state.books
 );
+
+export const selectOneBook = createSelector(
+  selectBooksState,
+  (state: BooksState) => state.book
+);

@@ -1,8 +1,10 @@
-import { Component, OnInit } from '@angular/core';
-import { BookService } from '../book.service';
+import {Component, inject, OnInit} from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Location } from '@angular/common';
 import { Book } from '../book';
+import { Store} from "@ngrx/store";
+import * as BooksActions from "../state/books.actions";
+import * as BooksSelectors from "../state/books.selectors";
 
 @Component({
   selector: 'app-book-detail',
@@ -10,22 +12,34 @@ import { Book } from '../book';
   styleUrls: ['./book-detail.component.css']
 })
 export class BookDetailComponent implements OnInit {
-  book?: Book;
+  private readonly store = inject(Store);
+
+  public book$ = this.store.select(BooksSelectors.selectOneBook);
+
+  private readonly bookId = Number(this.route.snapshot.paramMap.get('id'));
+  public bookName: string | undefined;
+  public bookAuthor: string | undefined;
+  public bookISBN: string | undefined;
+  public bookReleaseDate: Date | undefined;
 
   constructor(
-    private bookService: BookService, 
     private route: ActivatedRoute,
     private location: Location
-  ){}
+  ){ }
 
   ngOnInit(): void {
-    const id = Number(this.route.snapshot.paramMap.get('id'));
-    this.getOneBook(id);
+    this.getOneBook(this.bookId);
+
+    this.book$.subscribe((book) => {
+      this.bookName = book?.name;
+      this.bookAuthor = book?.author;
+      this.bookISBN = book?.isbn;
+      this.bookReleaseDate = book?.releaseDate;
+    });
   }
 
   public getOneBook(id: number): void {
-    this.bookService.getOneBook(id)
-      .subscribe(hero => this.book = hero);
+    this.store.dispatch(BooksActions.initBook({ id }));
   }
 
   public goBack(): void {
@@ -33,9 +47,15 @@ export class BookDetailComponent implements OnInit {
   }
 
   public save(): void {
-    if (this.book){
-      this.bookService.updateBook(this.book.id, this.book)
-      .subscribe(() => this.goBack());
-    }
+    const book = {
+      id: this.bookId,
+      name: this.bookName,
+      author: this.bookAuthor,
+      isbn: this.bookISBN,
+      releaseDate: this.bookReleaseDate
+    } as Book;
+    this.store.dispatch(BooksActions.updateBook({ book }));
+
+    this.goBack();
   }
 }
