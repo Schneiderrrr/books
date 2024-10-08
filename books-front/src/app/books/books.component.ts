@@ -1,7 +1,6 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { Book } from '../book';
 import { BookService } from '../book.service';
-import { HttpErrorResponse } from '@angular/common/http';
 import { ActivatedRoute } from '@angular/router';
 import { Store} from "@ngrx/store";
 import { map, Observable } from "rxjs";
@@ -62,15 +61,11 @@ export class BooksComponent implements OnInit {
   }
 
   public deleteBook(id: number): void{
-    // this.books = this.books.filter(b => b.id != id);
-    // this.bookService.deleteBook(id).subscribe();
+    this.store.dispatch(BooksActions.deleteBook({ id }));
   }
 
-  public addBook(name: string, isbn: string, author: string, date: Date ): void{
-    // var book = {name: name, isbn: isbn, author: author, releaseDate: date} as Book;
-    // this.bookService.addBook(book)
-    //   .subscribe(book => {
-    //     this.books.push(book)
-    //   });
+  public addBook(name: string, isbn: string, author: string, date: Date): void{
+    const book = {name: name, isbn: isbn, author: author, releaseDate: date} as Book;
+    this.store.dispatch(BooksActions.addBook({ book }));
   }
 }

@@ -75,3 +75,51 @@ export const loadSortedBooksEffect = createEffect(
     )
   }, { functional: true }
 );
+
+export const loadBooksWithoutDeletedEffect = createEffect(
+  () => {
+    const actions$ = inject(Actions);
+    const apiService$ = inject(BookService);
+
+    return actions$.pipe(
+      ofType(BooksActions.deleteBook),
+      switchMap(
+        (action: { id: number }) =>
+          apiService$.deleteBook(action.id)
+            .pipe(
+              map(
+                () => BooksActions.initBooks()
+              ),
+              catchError((error) => {
+                console.error('Error', error);
+                return of(BooksActions.loadBooksFailure({ error }));
+              })
+            )
+      ),
+    )
+  }, { functional: true }
+);
+
+export const loadBooksWithAddedEffect = createEffect(
+  () => {
+    const actions$ = inject(Actions);
+    const apiService$ = inject(BookService);
+
+    return actions$.pipe(
+      ofType(BooksActions.addBook),
+      switchMap(
+        (action: { book: Book }) =>
+          apiService$.addBook(action.book)
+            .pipe(
+              map(
+                () => BooksActions.initBooks()
+              ),
+              catchError((error) => {
+                console.error('Error', error);
+                return of(BooksActions.loadBooksFailure({ error }));
+              })
+            )
+      ),
+    )
+  }, { functional: true }
+);

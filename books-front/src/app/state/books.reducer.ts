@@ -31,6 +31,14 @@ export const booksReducer = createReducer(
       ...state,
       status: 'loading' as const
     })),
+    on(BooksActions.deleteBook, (state) => ({
+      ...state,
+      status: 'deleting' as const
+    })),
+    on(BooksActions.addBook, (state) => ({
+      ...state,
+      status: 'adding' as const
+    })),
     on(BooksActions.loadBooksSuccess, (state, { books }) => ({
         ...state,
         books: books,
