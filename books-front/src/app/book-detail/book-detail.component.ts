@@ -2,9 +2,11 @@ import {Component, inject, OnInit} from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Location } from '@angular/common';
 import { Book } from '../book';
-import { Store} from "@ngrx/store";
+import { Store } from "@ngrx/store";
+import { Actions, ofType } from "@ngrx/effects";
 import * as BooksActions from "../state/books.actions";
 import * as BooksSelectors from "../state/books.selectors";
+import { take } from "rxjs";
 
 @Component({
   selector: 'app-book-detail',
@@ -13,6 +15,7 @@ import * as BooksSelectors from "../state/books.selectors";
 })
 export class BookDetailComponent implements OnInit {
   private readonly store = inject(Store);
+  private readonly actions = inject(Actions);
 
   public book$ = this.store.select(BooksSelectors.selectOneBook);
 
@@ -56,6 +59,10 @@ export class BookDetailComponent implements OnInit {
     } as Book;
     this.store.dispatch(BooksActions.updateBook({ book }));
 
-    this.goBack();
+    // .dispatch() is asynchronous. So, if we want to do something AFTER dispatching
+    // some action, we should subscribe to it.
+    // P.S. Maybe it is better to create another one action "backAfterSuccess" and subscribe to it...
+    this.actions.pipe(take(1), ofType(BooksActions.loadOneBookSuccess))
+      .subscribe(() => this.goBack());
   }
 }
