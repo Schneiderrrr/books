@@ -19,55 +19,65 @@ export const initialBooksState: BooksState = {
     error: null
 }
 
+const statuses = {
+  loading: 'loading',
+  loaded: 'loaded',
+  error: 'error',
+
+  deleting: 'deleting',
+  adding: 'adding',
+  updating: 'updating',
+}
+
 export const booksReducer = createReducer(
   initialBooksState,
     on(BooksActions.initBooks, (state) => ({
         ...state,
-        status: 'loading' as const
+        status: statuses.loading
     })),
     on(BooksActions.partOfBooks, (state) => ({
         ...state,
-        status: 'loading' as const
+        status: statuses.loading
     })),
     on(BooksActions.sortedBooks, (state) => ({
       ...state,
-      status: 'loading' as const
+      status: statuses.loading
     })),
     on(BooksActions.deleteBook, (state) => ({
       ...state,
-      status: 'deleting' as const
+      status: statuses.deleting
     })),
     on(BooksActions.addBook, (state) => ({
       ...state,
-      status: 'adding' as const
+      status: statuses.adding
     })),
     on(BooksActions.loadBooksSuccess, (state, { books }) => ({
       ...state,
       books: books,
-      status: 'loaded' as const
+      status: statuses.loaded
     })),
     on(BooksActions.loadBooksFailure, (state, { error }) => ({
       ...state,
-      status: 'error' as const,
+      status: statuses.error,
       error
     })),
 
     on(BooksActions.initBook, (state) => ({
       ...state,
-      status: 'loading' as const
+      status: statuses.loading
     })),
     on(BooksActions.updateBook, (state) => ({
       ...state,
-      status: 'updating' as const
+      status: statuses.updating
     })),
     on(BooksActions.loadOneBookSuccess, (state, { book }) => ({
       ...state,
       book: book,
-      status: 'loaded' as const
+      status: statuses.loaded
     })),
     on(BooksActions.loadOneBookFailure, (state, { error }) => ({
       ...state,
-      status: 'error' as const,
+      status: statuses.error,
       error
     }))
 );
