@@ -1,4 +1,4 @@
-<div *ngFor="let book of books">
+<div *ngFor="let book of getBooksArr$() | async">
     <div>
       <a routerLink="/api/v1/books/{{book.id}}">{{ book.name }}</a>
       <button (click)="deleteBook(book.id)" type="button">Delete</button>
@@ -11,7 +11,7 @@
   <input #newBookISBN placeholder="ISBN" type="text" />
   <input #newBookDate type="date" required />
 
-  <button type="button" 
+  <button type="button"
     (click)="addBook(newBookName.value, newBookISBN.value, newBookAuthor.value, newBookDate.valueAsDate!)">
     Add new book
   </button>
