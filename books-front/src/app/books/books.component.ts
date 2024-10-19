@@ -1,4 +1,4 @@
-import { Component, OnInit, signal } from '@angular/core';
+import { Component, OnInit, signal, effect } from '@angular/core';
 import { Book } from '../book';
 import { BookService } from '../book.service';
 import { HttpErrorResponse } from '@angular/common/http';
@@ -19,7 +19,11 @@ export class BooksComponent implements OnInit {
   constructor(
     private bookService: BookService,
     private route: ActivatedRoute
-  ) {}
+  ) {
+    effect(() => {
+      console.log("Book's list change. Current length: " + this.books().length);
+    });
+  }
 
   ngOnInit(): void {
     this.take = Number(this.route.snapshot.paramMap.get('take'));
