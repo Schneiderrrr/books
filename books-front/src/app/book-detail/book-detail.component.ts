@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, signal } from '@angular/core';
 import { BookService } from '../book.service';
 import { ActivatedRoute } from '@angular/router';
 import { Location } from '@angular/common';
@@ -10,10 +10,10 @@ import { Book } from '../book';
   styleUrls: ['./book-detail.component.css']
 })
 export class BookDetailComponent implements OnInit {
-  book?: Book;
+  book = signal<Book | undefined>(undefined);
 
   constructor(
-    private bookService: BookService, 
+    private bookService: BookService,
     private route: ActivatedRoute,
     private location: Location
   ){}
@@ -25,7 +25,7 @@ export class BookDetailComponent implements OnInit {
 
   public getOneBook(id: number): void {
     this.bookService.getOneBook(id)
-      .subscribe(hero => this.book = hero);
+      .subscribe(book => this.book.set(book));
   }
 
   public goBack(): void {
@@ -34,7 +34,7 @@ export class BookDetailComponent implements OnInit {
 
   public save(): void {
     if (this.book){
-      this.bookService.updateBook(this.book.id, this.book)
+      this.bookService.updateBook(this.book()!.id, this.book()!)
       .subscribe(() => this.goBack());
     }
   }
